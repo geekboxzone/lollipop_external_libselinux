@@ -66,6 +66,9 @@ enum levelFrom {
 #define POLICY_BASE_VERSION        "/selinux_version"
 static int policy_index = 0;
 
+#ifdef USER_PTEST
+static int boot_mode = 0;
+#endif
 static void set_policy_index(void)
 {
 	int fd_base = -1, fd_override = -1;
@@ -1340,7 +1343,11 @@ static int selinux_android_load_policy_helper(bool reload)
 	if (reload && !selinux_android_use_data_policy())
 		return 0;
 
+	#ifdef USER_PTEST
+	fd = open(boot_mode == 3?"ptestsepolicy":sepolicy_file[policy_index], O_RDONLY | O_NOFOLLOW);
+	#else
 	fd = open(sepolicy_file[policy_index], O_RDONLY | O_NOFOLLOW);
+	#endif
 	if (fd < 0) {
 		selinux_log(SELINUX_ERROR, "SELinux:  Could not open sepolicy:  %s\n",
 				strerror(errno));
@@ -1380,7 +1387,12 @@ int selinux_android_reload_policy(void)
 {
     return selinux_android_load_policy_helper(true);
 }
-
+#ifdef USER_PTEST
+int selinux_android_load_policy_rk(mode){
+	boot_mode = mode;
+	return selinux_android_load_policy();
+}
+#endif
 int selinux_android_load_policy(void)
 {
 	const char *mnt = SELINUXMNT;

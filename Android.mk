@@ -52,6 +52,9 @@ LOCAL_C_INCLUDES := external/pcre
 LOCAL_WHOLE_STATIC_LIBRARIES := libpcre
 # 1003 corresponds to auditd, from system/core/logd/event.logtags
 LOCAL_CFLAGS := -DAUDITD_LOG_TAG=1003
+ifeq ($(strip $(BUILD_WITH_USER_PTEST)),true)
+LOCAL_CFLAGS += -DUSER_PTEST
+endif
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -60,7 +63,9 @@ LOCAL_CFLAGS := -DHOST
 ifeq ($(HOST_OS),darwin)
 LOCAL_CFLAGS += -DDARWIN
 endif
-
+ifeq ($(strip $(BUILD_WITH_USER_PTEST)),true)
+LOCAL_CFLAGS += -DUSER_PTEST
+endif
 LOCAL_SRC_FILES := $(common_HOST_FILES)
 LOCAL_MODULE:= libselinux
 LOCAL_MODULE_TAGS := eng
@@ -82,4 +87,7 @@ LOCAL_C_INCLUDES := external/pcre
 LOCAL_SHARED_LIBRARIES := liblog libpcre
 # 1003 corresponds to auditd, from system/core/logd/event.logtags
 LOCAL_CFLAGS := -DAUDITD_LOG_TAG=1003
+ifeq ($(strip $(BUILD_WITH_USER_PTEST)),true)
+LOCAL_CFLAGS += -DUSER_PTEST
+endif
 include $(BUILD_SHARED_LIBRARY)
