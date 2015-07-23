@@ -1344,7 +1344,7 @@ static int selinux_android_load_policy_helper(bool reload)
 		return 0;
 
 	#ifdef USER_PTEST
-	fd = open(boot_mode == 3?"ptestsepolicy":sepolicy_file[policy_index], O_RDONLY | O_NOFOLLOW);
+	fd = open(boot_mode == 3?"sepolicy.ptest":sepolicy_file[policy_index], O_RDONLY | O_NOFOLLOW);
 	#else
 	fd = open(sepolicy_file[policy_index], O_RDONLY | O_NOFOLLOW);
 	#endif
